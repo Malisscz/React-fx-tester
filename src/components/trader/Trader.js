@@ -3,16 +3,69 @@ import { Chart } from '../chart/Chart'
 import { Trade } from '../trade/Trade'
 
 export class Trader extends React.Component {
+	static _tradeIdIterator = 0
+
 	state = {
-		trades: [
-			{
-				id: Trader._tradeIdIterator++,
-				openPrice: 1.24141,
-				closePrice: null,
-				type: 'SELL',
-				time: new Date()
-			}
-		]
+		actualPrice: null,
+		trades: []
+	}
+
+	componentDidMount() {
+		this.updateActualPrice()
+		this.intervalId = setInterval(() => {
+			this.updateActualPrice()
+		}, 5000)
+	}
+
+	updateActualPrice = async () => {
+		const actualPrice = await this.getActualRate()
+		this.setState({
+			actualPrice
+		})
+	}
+
+	addBuyTrade = () => {
+		const newTrade = {
+			id: Trader._tradeIdIterator++,
+			openPrice: this.state.actualPrice,
+			closePrice: null,
+			type: 'BUY',
+			time: new Date()
+		}
+		this.setState((state) => ({
+			trades: [newTrade, ...state.trades]
+		}))
+	}
+
+	addSellTrade = () => {
+		const newTrade = {
+			id: Trader._tradeIdIterator++,
+			openPrice: this.state.actualPrice,
+			closePrice: null,
+			type: 'SELL',
+			time: new Date()
+		}
+		this.setState((state) => ({
+			trades: [newTrade, ...state.trades]
+		}))
+	}
+
+	getActualRate = async () => {
+		return new Promise(resolve => {
+			fetch('https://cors.io/?https://www.freeforexapi.com/api/live?pairs=EURUSD')
+				.then(function (response) {
+					return response.json()
+				})
+				.then((res) => {
+					const rate = res.rates.EURUSD.rate
+					// const makeItFunny = 0
+					const makeItFunny = (Math.random() - 0.5) / 100
+					resolve(rate + makeItFunny)
+				})
+				.catch(() => {
+					resolve(null)
+				})
+		})
 	}
 
 	render() {
@@ -28,11 +81,11 @@ export class Trader extends React.Component {
 					<div className="col-4">
 						<div className="container">
 							<div className="row">
-								Aktuální cena: 1.4544
+								Aktuální cena: {this.state.actualPrice && this.state.actualPrice.toFixed(4)}
 							</div>
 							<div className="row">
-								<button className="controls__button">Buy</button>
-								<button className="controls__button">Sell</button>
+								<button onClick={this.addBuyTrade} className="controls__button">Buy</button>
+								<button onClick={this.addSellTrade} className="controls__button">Sell</button>
 							</div>
 							<div className="row">
 								<h2>Obchody</h2>
@@ -55,5 +108,9 @@ export class Trader extends React.Component {
 				</div>
 			</div>
 		)
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.intervalId)
 	}
 }
