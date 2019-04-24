@@ -10,6 +10,20 @@ export class Trader extends React.Component {
 		trades: []
 	}
 
+	get profit() {
+		const profit = this.state.trades.reduce((curVal, trade) => {
+			if (trade.closePrice === null) {
+				return curVal
+			}
+			if (trade.type === 'BUY') {
+				return curVal + trade.closePrice - trade.openPrice
+			} else {
+				return curVal + trade.openPrice - trade.closePrice
+			}
+		}, 0)
+		return profit * 1000
+	}
+
 	componentDidMount() {
 		this.updateActualPrice()
 		this.intervalId = setInterval(() => {
@@ -68,6 +82,21 @@ export class Trader extends React.Component {
 		})
 	}
 
+
+	closeTrade = (tradeId) => {
+		this.setState((state) => {
+			const trades = state.trades.map(trade => {
+				if (trade.id === tradeId) {
+					return {...trade, closePrice: this.state.actualPrice}
+				}
+				return trade
+			})
+			return {
+				trades
+			}
+		})
+	}
+
 	render() {
 		return (
 			<div className="app container">
@@ -94,7 +123,7 @@ export class Trader extends React.Component {
 								return <Trade trade={trade} key={trade.time} onClose={this.closeTrade}/>
 							})}
 							<div className="row result">
-								Zisk/ztráta: 34.244 €
+								Zisk/ztráta: {this.profit.toFixed(3)} €
 							</div>
 						</div>
 					</div>
