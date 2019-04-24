@@ -9,7 +9,12 @@ class TradeInternal extends React.Component {
 		this.props.onClose(this.props.trade.id)
 	}
 
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		return false;
+	}
+
 	render() {
+		console.log('rendering trade');
 		const {trade, t} = this.props;
 		return (
 			<div className={`row ${trade.closePrice && 'trade--closed'}`}>

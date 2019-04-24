@@ -91,7 +91,7 @@ export class Trader extends React.Component {
 								<h2>Obchody</h2>
 							</div>
 							{this.state.trades.map((trade) => {
-								return <Trade trade={trade} key={trade.time} onClose={this.closeTrade}/>
+								return <Trade trade={trade} key={trade.time} onClose={() => {}}/>
 							})}
 							<div className="row result">
 								Zisk/ztráta: 34.244 €
