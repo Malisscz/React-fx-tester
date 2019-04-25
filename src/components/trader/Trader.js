@@ -140,7 +140,7 @@ export class Trader extends React.Component {
                                 })}
 
                             <div className="row result">
-                                Zisk/ztráta: {this.profit} €
+                                Zisk/ztráta: {this.profit.toFixed(3)} €
                             </div>
                         </div>
                     </div>
