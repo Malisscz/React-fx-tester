@@ -1,5 +1,6 @@
 import React from 'react'
 import {Chart} from "../chart/Chart";
+import {Trade} from "../trade/Trade";
 
 export class Trader extends React.Component {
     render() {
@@ -24,21 +25,11 @@ export class Trader extends React.Component {
                             <div className="row">
                                 <h2>Obchody</h2>
                             </div>
-                            <div className='row'>
-                                <div className="col">BUY</div>
-                                <div className="col">1.4544</div>
-                                <div className="col">
-                                    1.4544
-                                    <button>Zavřít</button>
-                                </div>
-                            </div>
-                            <div className='row trade--closed'>
-                                <div className="col">SELL</div>
-                                <div className="col">1.4511</div>
-                                <div className="col">
-                                    1.4544
-                                </div>
-                            </div>
+
+                            <Trade />
+                            <Trade />
+                            <Trade />
+                            <Trade />
                             <div className="row result">
                                 Zisk/ztráta: 34.244 €
                             </div>
