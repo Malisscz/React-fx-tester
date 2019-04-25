@@ -28,6 +28,8 @@ export class Trader extends React.Component {
 
     componentDidMount() {
         this.updateActualPrice();
+        //na komponent unmount se musi zavolat clearInterval pro ID tohoto intervalu
+        //setInterval ulozit pod ID
         setInterval(() =>{
             this.updateActualPrice()
         }, 3000)

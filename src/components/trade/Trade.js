@@ -9,8 +9,12 @@ export class Trade extends React.Component{
     render() {
        console.log(this.props.trade);
        const trade = this.props.trade;
+       var rowClass = "row";
+       if(trade.closePrice != null){
+           rowClass += " trade--closed"
+       }
        return (
-        <div className="row">
+        <div className={rowClass}>
             <div className="col">{trade.id}</div>
             <div className="col">{trade.type}</div>
             <div className="col">
