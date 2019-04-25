@@ -7,7 +7,7 @@ export class Trader extends React.Component {
     state = {
         actualPrice: null,
         trades: [
-            {
+           /* {
                 id: 1,
                 openPrice: 1.24141,
                 closePrice: null,
@@ -20,7 +20,7 @@ export class Trader extends React.Component {
                 closePrice: 3.251,
                 type: 'BUY',
                 time: new Date()
-            }
+            }*/
         ]
     };
 
@@ -28,7 +28,28 @@ export class Trader extends React.Component {
 
     componentDidMount() {
         this.updateActualPrice();
+        setInterval(() =>{
+            this.updateActualPrice()
+        }, 3000)
+
     }
+
+
+    get profit() {
+        const profit = this.state.trades.reduce((curVal, trade) => {
+            if (trade.closePrice === null) {
+                return curVal
+            }
+            if (trade.type === 'BUY') {
+                return curVal + trade.closePrice - trade.openPrice
+            } else {
+                return curVal + trade.openPrice - trade.closePrice
+            }
+        }, 0)
+        return profit * 1000
+    }
+
+
 
     updateActualPrice = async () => {
         //await ceka na premisu
@@ -61,12 +82,35 @@ export class Trader extends React.Component {
     addBuyTrade = () => {
         const newTrade = {
             id: Trader._tradeIdCounter++,
-            openPrice: 1515,
+            openPrice: this.state.actualPrice,
             closePrice: null,
             type: 'BUY',
             time: new Date()
-        }
+        };
+
+        /*rozsireni state o newTrade, ktery pridam na zacatek listu*/
+        this.setState((state) =>{
+                return{
+                    trades: [newTrade, ...state.trades]
+                }
+            }
+        )
     };
+
+    closeTrade = (tradeId) => {
+        this.setState((state) => {
+            const trades = state.trades.map(trade => {
+                if (trade.id === tradeId) {
+                    return {...trade, closePrice: this.state.actualPrice}
+                }
+                return trade
+            })
+            return {
+                trades: trades
+            }
+        })
+    }
+
 
     render() {
         return (
@@ -81,21 +125,22 @@ export class Trader extends React.Component {
                     <div className="col-4">
                         <div className="container">
                             <div className="row">
+                                {/*test komentare :) vykresleni hodnoty pokud je ruzna od null, na komponent Did Mount se naplni*/}
                                 Aktuální cena: {this.state.actualPrice && this.state.actualPrice.toFixed(4)}
                             </div>
                             <div className="row">
-                                <button className="controls__button">Buy</button>
+                                <button className="controls__button" onClick={this.addBuyTrade}>Buy</button>
                                 <button className="controls__button">Sell</button>
                             </div>
                             <div className="row">
                                 <h2>Obchody</h2>
                             </div>
                             {this.state.trades.map((trade) => {
-                                    return <Trade trade={trade} />
+                                    return <Trade trade={trade} key={trade.id + '_' + trade.time} onClose={this.closeTrade}/>
                                 })}
 
                             <div className="row result">
-                                Zisk/ztráta: 34.244 €
+                                Zisk/ztráta: {this.profit} €
                             </div>
                         </div>
                     </div>
