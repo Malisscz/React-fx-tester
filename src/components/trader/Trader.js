@@ -5,6 +5,7 @@ import {Trade} from "../trade/Trade";
 export class Trader extends React.Component {
 
     state = {
+        actualPrice: null,
         trades: [
             {
                 id: 1,
@@ -23,6 +24,49 @@ export class Trader extends React.Component {
         ]
     };
 
+    static _tradeIdCounter = 0;
+
+    componentDidMount() {
+        this.updateActualPrice();
+    }
+
+    updateActualPrice = async () => {
+        //await ceka na premisu
+        const actualPrice = await this.getActualRate();
+
+        this.setState({
+            actualPrice: actualPrice
+        })
+
+    };
+
+    getActualRate = async () => {
+        return new Promise(resolve => {
+            fetch('https://cors.io/?https://www.freeforexapi.com/api/live?pairs=EURUSD')
+                .then(function (response) {
+                    return response.json()
+                })
+                .then((res) => {
+                    const rate = res.rates.EURUSD.rate
+                    // const makeItFunny = 0
+                    const makeItFunny = (Math.random() - 0.5) / 100
+                    resolve(rate + makeItFunny)
+                })
+                .catch(() => {
+                    resolve(null)
+                })
+        })
+    };
+
+    addBuyTrade = () => {
+        const newTrade = {
+            id: Trader._tradeIdCounter++,
+            openPrice: 1515,
+            closePrice: null,
+            type: 'BUY',
+            time: new Date()
+        }
+    };
 
     render() {
         return (
@@ -37,7 +81,7 @@ export class Trader extends React.Component {
                     <div className="col-4">
                         <div className="container">
                             <div className="row">
-                                Aktuální cena: 1.4544
+                                Aktuální cena: {this.state.actualPrice && this.state.actualPrice.toFixed(4)}
                             </div>
                             <div className="row">
                                 <button className="controls__button">Buy</button>
@@ -66,4 +110,5 @@ export class Trader extends React.Component {
             </div>
         )
     }
+
 }
