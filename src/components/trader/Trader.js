@@ -17,7 +17,7 @@ export class Trader extends React.Component {
                 id: 2,
                 openPrice: 5.24141,
                 closePrice: null,
-                type: 'SELL',
+                type: 'BUY',
                 time: new Date()
             }
         ]
