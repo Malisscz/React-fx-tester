@@ -3,6 +3,27 @@ import {Chart} from "../chart/Chart";
 import {Trade} from "../trade/Trade";
 
 export class Trader extends React.Component {
+
+    state = {
+        trades: [
+            {
+                id: 1,
+                openPrice: 1.24141,
+                closePrice: null,
+                type: 'SELL',
+                time: new Date()
+            },
+            {
+                id: 2,
+                openPrice: 5.24141,
+                closePrice: null,
+                type: 'SELL',
+                time: new Date()
+            }
+        ]
+    };
+
+
     render() {
         return (
             <div className="app container">
@@ -25,11 +46,10 @@ export class Trader extends React.Component {
                             <div className="row">
                                 <h2>Obchody</h2>
                             </div>
+                            {this.state.trades.map((trade) => {
+                                    return <Trade trade={trade} />
+                                })}
 
-                            <Trade />
-                            <Trade />
-                            <Trade />
-                            <Trade />
                             <div className="row result">
                                 Zisk/ztráta: 34.244 €
                             </div>

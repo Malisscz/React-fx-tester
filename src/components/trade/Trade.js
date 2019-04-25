@@ -2,6 +2,7 @@ import React from "react";
 
 export class Trade extends React.Component{
     render() {
+        console.log(this.props.trade)
        return (
         <div className='row'>
             <div className="col">BUY</div>
